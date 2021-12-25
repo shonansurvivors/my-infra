@@ -13,6 +13,10 @@ module "vpc" {
   single_nat_gateway     = true
   one_nat_gateway_per_az = false
 
+  enable_flow_log           = true
+  flow_log_destination_arn  = aws_s3_bucket.vpc_flow_logs.arn
+  flow_log_destination_type = "s3"
+
   enable_vpn_gateway = false
 }
 
@@ -31,5 +35,22 @@ resource "aws_eip" "nat" {
   network_interface = module.nat.eni_id
   tags = {
     "Name" = "nat-instance-main"
+  }
+}
+
+resource "aws_s3_bucket" "vpc_flow_logs" {
+  bucket = "shonansurvivors-prod-vpc-flow-logs"
+
+  acl           = "private"
+  force_destroy = false
+
+  server_side_encryption_configuration {
+    rule {
+      bucket_key_enabled = false
+
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
   }
 }
