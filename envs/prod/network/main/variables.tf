@@ -1,0 +1,1 @@
+../../../shared/network/main/variables.tf

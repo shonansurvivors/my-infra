@@ -1,0 +1,21 @@
+version: 0.2
+
+env:
+  parameter-store:
+    SLACK_TOKEN: /slack/github/shonansurvivors/infra/tfnotify/token
+    SLACK_CHANNEL_ID: /slack/shonansurvivors/my-infra/channel-id
+
+phases:
+  install:
+    commands:
+      - git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+      - ln -s ~/.tfenv/bin/* /usr/local/bin
+      - tfenv install ${TF_VERSION}
+      - wget https://github.com/mercari/tfnotify/releases/download/v0.7.0/tfnotify_linux_amd64.tar.gz -P /tmp
+      - tar zxvf /tmp/tfnotify_linux_amd64.tar.gz -C /tmp
+      - mv /tmp/tfnotify /bin/tfnotify
+  build:
+    commands:
+      - cd ${TF_ROOT}
+      - export AFTER_TF='tfnotify --config ${CODEBUILD_SRC_DIR}/modules/aws_codebuild_terraform_apply/tfnotify.yml ${TF_CMD} -m ${ENV}:${TARGET_DIR}'
+      - ./terraform.sh ${ENV} ALL apply -auto-approve -no-color

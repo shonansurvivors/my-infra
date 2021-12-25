@@ -1,0 +1,24 @@
+version: 0.2
+
+env:
+  parameter-store:
+    GITHUB_TOKEN: $GITHUB_TOKEN_PATH
+
+phases:
+  install:
+    commands:
+      - git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+      - ln -s ~/.tfenv/bin/* /usr/local/bin
+      - tfenv install ${TF_VERSION}
+      - curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      - wget https://github.com/mercari/tfnotify/releases/download/v0.7.0/tfnotify_linux_amd64.tar.gz -P /tmp
+      - tar zxvf /tmp/tfnotify_linux_amd64.tar.gz -C /tmp
+      - mv /tmp/tfnotify /bin/tfnotify
+  build:
+    commands:
+      - cd ${TF_ROOT}
+      # - ./terraform.sh validate
+      - tflint --init
+      - tflint
+      - export AFTER_TF='tfnotify --config ${CODEBUILD_SRC_DIR}/modules/aws_codebuild_terraform/tfnotify_${TF_CMD}.yml ${TF_CMD} -m ${ENV}:${TARGET_DIR}'
+      - ./terraform.sh ${ENV} ALL plan -no-color

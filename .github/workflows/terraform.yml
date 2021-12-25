@@ -1,0 +1,26 @@
+on:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'envs/main/*'
+      - 'envs/master/*'
+      - 'modules/*'
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.3
+
+      - run: terraform fmt -recursive -check envs/main
+
+      - run: terraform fmt -recursive -check envs/master
+
+      - run: terraform fmt -recursive -check modules
