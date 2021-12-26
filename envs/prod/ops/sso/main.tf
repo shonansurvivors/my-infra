@@ -1,1 +1,0 @@
-../../../shared/ops/sso/main.tf
