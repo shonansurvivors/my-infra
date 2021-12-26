@@ -3,7 +3,7 @@ terraform {
   backend "s3" {
     bucket  = "shonansurvivors-prod-tfstate"
     encrypt = true
-    key     = "foundation/network.tfstate"
+    key     = "foundation/ops.tfstate"
     profile = "prod"
     region  = "ap-northeast-1"
   }
