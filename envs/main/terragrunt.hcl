@@ -6,6 +6,7 @@ remote_state {
   }
   config = {
     bucket  = "shonansurvivors-prod-tfstate"
+    encrypt = true
     key     = "${path_relative_to_include()}.tfstate"
     profile = "prod"
     region  = "ap-northeast-1"
