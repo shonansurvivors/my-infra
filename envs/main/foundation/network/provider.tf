@@ -5,9 +5,9 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Env      = "prod"
-      System   = "main"
-      MangedBy = "my-infra"
+      Env       = "prod"
+      System    = "main"
+      ManagedBy = "my-infra"
     }
   }
 }
