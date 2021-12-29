@@ -16,6 +16,7 @@ module "vpc" {
   enable_flow_log           = true
   flow_log_destination_arn  = aws_s3_bucket.vpc_flow_logs.arn
   flow_log_destination_type = "s3"
+  flow_log_log_format       = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${log-status} $${pkt-srcaddr} $${pkt-dstaddr} $${pkt-src-aws-service} $${pkt-dst-aws-service} $${flow-direction} $${traffic-path}" # $${vpc-id} $${subnet-id} $${instance-id} $${tcp-flags} $${type} $${region} $${az-id} $${interface-id} $${sublocation-type} $${sublocation-id}
 
   enable_vpn_gateway = false
 }
