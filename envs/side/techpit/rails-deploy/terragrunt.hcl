@@ -18,7 +18,7 @@ generate "provider" {
   if_exists = "overwrite"
   contents  = <<EOF
 provider "aws" {
-  profile = "master"
+  profile = "rails-deploy"
   region  = "ap-northeast-1"
 
   default_tags {
