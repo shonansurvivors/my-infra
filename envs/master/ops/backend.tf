@@ -2,6 +2,7 @@
 terraform {
   backend "s3" {
     bucket  = "shonansurvivors-master-tfstate"
+    encrypt = true
     key     = "ops.tfstate"
     profile = "master"
     region  = "ap-northeast-1"
