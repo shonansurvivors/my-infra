@@ -74,7 +74,7 @@ resource "aws_sns_topic" "budget" {
   )
 }
 
-resource "aws_sns_topic_subscription" "budget_chatbot" {
+resource "aws_sns_topic_subscription" "budget_chatbot_cost" {
   confirmation_timeout_in_minutes = 1
   endpoint                        = "https://global.sns-api.chatbot.amazonaws.com"
   endpoint_auto_confirms          = false
@@ -82,8 +82,8 @@ resource "aws_sns_topic_subscription" "budget_chatbot" {
   topic_arn                       = aws_sns_topic.budget.arn
 }
 
-resource "aws_iam_role" "chatbot_budget" {
-  name = "chatbot-budget"
+resource "aws_iam_role" "chatbot_cost" {
+  name = "chatbot-cost"
   path = "/service-role/"
 
   assume_role_policy = jsonencode(
@@ -102,10 +102,10 @@ resource "aws_iam_role" "chatbot_budget" {
   )
 }
 
-resource "aws_cloudwatch_log_group" "chatbot_budget" {
+resource "aws_cloudwatch_log_group" "chatbot_cost" {
   provider = aws.us-east-1
 
-  name = "/aws/chatbot/budget"
+  name = "/aws/chatbot/cost"
 
   retention_in_days = 7
 }
