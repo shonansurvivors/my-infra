@@ -82,6 +82,41 @@ resource "aws_sns_topic_subscription" "budget_chatbot_cost" {
   topic_arn                       = aws_sns_topic.budget.arn
 }
 
+resource "aws_ssm_parameter" "slack_channel_id" {
+  name  = "/slack/channel/cost/id"
+  type  = "SecureString"
+  value = "dummy"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+resource "aws_ssm_parameter" "slack_workspace_id" {
+  name  = "/slack/workspace/shonansurvivors/id"
+  type  = "SecureString"
+  value = "dummy"
+
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+module "chatbot_slack_configuration_cost" {
+  source  = "waveaccounting/chatbot-slack-configuration/aws"
+  version = "1.0.0"
+
+  configuration_name = "cost"
+  iam_role_arn       = aws_iam_role.chatbot_cost.arn
+  logging_level      = "ERROR"
+  slack_channel_id   = aws_ssm_parameter.slack_channel_id.value
+  slack_workspace_id = aws_ssm_parameter.slack_workspace_id.value
+
+  sns_topic_arns = [
+    aws_sns_topic.budget.arn,
+  ]
+}
+
 resource "aws_iam_role" "chatbot_cost" {
   name = "chatbot-cost"
   path = "/service-role/"
