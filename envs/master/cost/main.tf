@@ -74,14 +74,6 @@ resource "aws_sns_topic" "budget" {
   )
 }
 
-resource "aws_sns_topic_subscription" "budget_chatbot_cost" {
-  confirmation_timeout_in_minutes = 1
-  endpoint                        = "https://global.sns-api.chatbot.amazonaws.com"
-  endpoint_auto_confirms          = false
-  protocol                        = "https"
-  topic_arn                       = aws_sns_topic.budget.arn
-}
-
 resource "aws_ssm_parameter" "slack_channel_id" {
   name  = "/slack/channel/cost/id"
   type  = "SecureString"
