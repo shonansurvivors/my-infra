@@ -96,7 +96,7 @@ resource "aws_ssm_parameter" "slack_workspace_id" {
 
 module "chatbot_slack_configuration_cost" {
   source  = "waveaccounting/chatbot-slack-configuration/aws"
-  version = "1.0.0"
+  version = "1.1.0-alpha.3"
 
   configuration_name = "cost"
   iam_role_arn       = aws_iam_role.chatbot_cost.arn
