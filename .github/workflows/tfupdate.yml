@@ -13,7 +13,7 @@ jobs:
     steps:
       - id: check-branch
         # NOTE: Shows lots of warnings because of https://github.com/octokit/request-action#warnings
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@v2.0.18
         with:
           route: GET /repos/:repository/git/ref/:ref
           repository: ${{ github.repository }}
