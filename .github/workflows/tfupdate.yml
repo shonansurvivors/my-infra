@@ -18,6 +18,8 @@ jobs:
           route: GET /repos/:repository/git/ref/:ref
           repository: ${{ github.repository }}
           ref: heads/${{ env.TFUPDATE_BRANCH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - uses: actions/checkout@v2
