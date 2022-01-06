@@ -49,7 +49,7 @@ jobs:
           echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
 
       - uses: repo-sync/pull-request@v2
-        if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
+        # if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
         with:
           source_branch: ${{ env.TFUPDATE_BRANCH }}
           destination_branch: ${{ env.TFUPDATE_BASE_BRANCH }}
