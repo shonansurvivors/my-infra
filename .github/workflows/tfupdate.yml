@@ -10,6 +10,9 @@ jobs:
   setup-branch:
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - id: check-branch
         # NOTE: Shows lots of warnings because of https://github.com/octokit/request-action#warnings
@@ -18,8 +21,6 @@ jobs:
           route: GET /repos/:repository/git/ref/:ref
           repository: ${{ github.repository }}
           ref: heads/${{ env.TFUPDATE_BRANCH }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
       - uses: actions/checkout@v2
