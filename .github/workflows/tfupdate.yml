@@ -43,6 +43,31 @@ jobs:
         run: |
           echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
 
+      - name: Get the commit sha after tfupdate
+        id: after-sha
+        run: |
+          echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
+
+      - uses: repo-sync/pull-request@v2
+        if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
+        with:
+          source_branch: ${{ env.TFUPDATE_BRANCH }}
+          destination_branch: ${{ env.TFUPDATE_BASE_BRANCH }}
+          pr_title: Update Terraform Version & Terraform Providers Version
+          pr_body: |
+            **This pull request is created automatically by the CI: [tfupdate](https://github.com/${{ github.repository }}/actions?query=workflow%3Atfupdate)**
+
+            ---
+
+            Run the below code to try this changes locally.
+
+            \`\`\`
+            cd path/to/${{ github.repository }}
+            gh pr checkout ${{ env.TFUPDATE_BRANCH }}
+            \`\`\`
+          pr_label: tfupdate
+          pr_allow_empty: false
+
 #    jobs:
 #      tfupdate-provider:
 #        runs-on: ubuntu-latest
@@ -69,7 +94,3 @@ jobs:
 #          branch: ${{ env.TFUPDATE_BRANCH }}
 #          message: "Update terraform/${{ env.TF_KIND }}: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ."
 #
-#      - name: Get the commit sha after tfupdate
-#        id: after-sha
-#        run: |
-#          echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
