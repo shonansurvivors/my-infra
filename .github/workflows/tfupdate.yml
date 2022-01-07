@@ -2,6 +2,8 @@ name: tfupdate
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 21 * * SUN'
 
 env:
   TFUPDATE_BINARY: https://github.com/minamijoyo/tfupdate/releases/download/v0.6.3/tfupdate_0.6.3_linux_amd64.tar.gz
