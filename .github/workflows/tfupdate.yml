@@ -13,7 +13,7 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TFUPDATE_PROVIDER: hashicorp/aws
+      TFUPDATE_PROVIDER: aws
       TF_KIND: aws
       TF_DIR: ./envs/master/ops
 
@@ -56,16 +56,10 @@ jobs:
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: (${{ env.TF_KIND }}) tfupdate release latest -s tfregistryProvider ${{ env.TFUPDATE_PROVIDER }} .
-        id: get-latest-version
-        run: |
-          cd ${TF_DIR}
-          echo ::set-output name=version::$(tfupdate release latest -s tfregistryProvider ${TFUPDATE_PROVIDER})
-
       - name: (${{ env.TF_KIND }}) tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
         run: |
           cd ${TF_DIR}
-          tfupdate provider ${TFUPDATE_PROVIDER} -v ${{ steps.get-latest-version.outputs.version }} .
+          tfupdate provider ${TFUPDATE_PROVIDER} .
 
       - uses: EndBug/add-and-commit@v7
         with:
