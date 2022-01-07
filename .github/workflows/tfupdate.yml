@@ -8,7 +8,7 @@ env:
   TFUPDATE_BINARY: https://github.com/minamijoyo/tfupdate/releases/download/v0.6.3/tfupdate_0.6.3_linux_amd64.tar.gz
   TFUPDATE_BASE_BRANCH: main
   TFUPDATE_BRANCH: tfupdate
-  TF_ROOT_DIR: envs
+  TF_ROOT_DIR: .
 
 jobs:
   set-matrix:
@@ -24,7 +24,7 @@ jobs:
         id: find-tfstate-dirs
         run: |
           dirs=$(find ${TF_ROOT_DIR} -type f -name '*.tf' -exec dirname {} \; | grep -v 'modules\|\.terraform' | uniq |  jq -R -s -c 'split("\n")[:-1]')
-          echo $dirs
+          echo $dirs # 確認のため出力
           echo "::set-output name=dirs::${dirs}"
 
   provider:
