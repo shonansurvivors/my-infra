@@ -10,7 +10,7 @@ env:
   TFUPDATE_BRANCH: tfupdate
 
 jobs:
-  tfupdate-provider:
+  provider:
     runs-on: ubuntu-latest
 
     strategy:
