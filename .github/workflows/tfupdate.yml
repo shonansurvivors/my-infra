@@ -3,15 +3,19 @@ on:
   workflow_dispatch:
 
 env:
+  TFUPDATE_BINARY: https://github.com/minamijoyo/tfupdate/releases/download/v0.6.3/tfupdate_0.6.3_linux_amd64.tar.gz
   TFUPDATE_BASE_BRANCH: main
   TFUPDATE_BRANCH: tfupdate
 
 jobs:
-  setup-branch:
+  tfupdate-provider:
     runs-on: ubuntu-latest
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TFUPDATE_PROVIDER: hashicorp/aws
+      TF_KIND: aws
+      TF_DIR: ./envs/master/ops
 
     steps:
       - id: check-branch
@@ -44,6 +48,30 @@ jobs:
         run: |
           echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
 
+      - name: Setup tfupdate from binary
+        run: |
+          set -o pipefail
+          wget -P /tmp ${TFUPDATE_BINARY}
+          basename ${TFUPDATE_BINARY} | xargs -I {} tar xvf /tmp/{} -C /tmp
+          sudo mv /tmp/tfupdate /usr/local/bin
+          sudo chmod +x /usr/local/bin/tfupdate
+
+      - name: (${{ env.TF_KIND }}) tfupdate release latest -s tfregistryProvider ${{ env.TFUPDATE_PROVIDER }} .
+        id: get-latest-version
+        run: |
+          cd ${TF_DIR}
+          echo ::set-output name=version::$(tfupdate release latest -s tfregistryProvider ${TFUPDATE_PROVIDER})
+
+      - name: (${{ env.TF_KIND }}) tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
+        run: |
+          cd ${TF_DIR}
+          tfupdate provider ${TFUPDATE_PROVIDER} -v ${{ steps.get-latest-version.outputs.version }} .
+
+      - uses: EndBug/add-and-commit@v7
+        with:
+          branch: ${{ env.TFUPDATE_BRANCH }}
+          message: "Update terraform/${{ env.TF_KIND }}: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ."
+
       - name: Get the commit sha after tfupdate
         id: after-sha
         run: |
@@ -68,30 +96,3 @@ jobs:
             \`\`\`
           pr_label: tfupdate
           pr_allow_empty: false
-
-#    jobs:
-#      tfupdate-provider:
-#        runs-on: ubuntu-latest
-#
-#        env:
-#          TFUPDATE_PROVIDER: hashicorp/aws
-#          TF_KIND: aws
-#          TF_DIR: ./envs/master/ops
-#
-#      steps:
-#      - name: (${{ env.TF_KIND }}) tfupdate release latest -s tfregistryProvider ${{ env.TFUPDATE_PROVIDER }} .
-#        id: get-latest-version
-#        run: |
-#          cd ${TF_DIR}
-#          echo ::set-output name=version::$(tfupdate release latest -s tfregistryProvider ${TFUPDATE_PROVIDER})
-#
-#      - name: (${{ env.TF_KIND }}) tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
-#        run: |
-#          cd ${TF_DIR}
-#          tfupdate provider ${TFUPDATE_PROVIDER} -v ${{ steps.get-latest-version.outputs.version }} .
-#
-#      - uses: EndBug/add-and-commit@v7
-#        with:
-#          branch: ${{ env.TFUPDATE_BRANCH }}
-#          message: "Update terraform/${{ env.TF_KIND }}: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ."
-#
