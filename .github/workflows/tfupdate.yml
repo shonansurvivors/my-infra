@@ -11,11 +11,19 @@ jobs:
   tfupdate-provider:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        tfupdate:
+          - DIR: ./envs/master/cost
+          - DIR: ./envs/master/ops
+
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TFUPDATE_PROVIDER: aws
       TF_KIND: aws
-      TF_DIR: ./envs/master/ops
+      TF_DIR: ./terraform/${{ matrix.tfupdate.DIR }}
 
     steps:
       - id: check-branch
