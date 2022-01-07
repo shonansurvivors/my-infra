@@ -14,17 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.value }}
+      dirs: ${{ steps.find-tfstate-dirs.outputs.dirs }}
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set matrix
-        id: set-matrix
+      - name: Find tfstate dirs
+        id: find-tfstate-dirs
         run: |
           dirs=$(find envs -type f -name '*.tf' -exec dirname {} \; | grep -v '_templates\|modules\|\.terraform' | uniq |  jq -R -s -c 'split("\n")[:-1]')
           echo $dirs
-          echo "::set-output name=value::${dirs}"
+          echo "::set-output name=dirs::${dirs}"
 
   provider:
     needs: set-matrix
@@ -35,13 +35,13 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        tfupdate: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
+        TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TFUPDATE_PROVIDER: aws
       TF_KIND: aws
-      TF_DIR: ${{ matrix.tfupdate.DIR }}
+      TF_DIR: ${{ matrix.TF_DIR }}
 
     steps:
       - id: check-branch
