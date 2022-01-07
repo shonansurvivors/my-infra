@@ -108,11 +108,10 @@ jobs:
 
             ---
 
-            Run the below code to try this changes locally.
+            Run the below code to try this changes.
 
             \`\`\`
-            cd path/to/${{ github.repository }}
-            gh pr checkout ${{ env.TFUPDATE_BRANCH }}
+            atlantis apply
             \`\`\`
           pr_label: tfupdate
           pr_allow_empty: false
