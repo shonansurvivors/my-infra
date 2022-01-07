@@ -23,7 +23,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TFUPDATE_PROVIDER: aws
       TF_KIND: aws
-      TF_DIR: ./terraform/${{ matrix.tfupdate.DIR }}
+      TF_DIR: ${{ matrix.tfupdate.DIR }}
 
     steps:
       - id: check-branch
