@@ -17,10 +17,13 @@ jobs:
       something: ${{ steps.set-matrix.outputs.value }}
 
     steps:
+      - uses: actions/checkout@v2
+
       - name: make values
         id: set-matrix
         run: |
-          list=$(echo '["envs/master/cost","envs/master/ops"]' | jq -c)
+          list=$(find envs/master -type f -name '*.tf' -exec dirname {} \; | grep -v '_templates\|modules\|\.terraform' | uniq)
+          list="${list//$'\n'/\\n}"
           echo "::set-output name=value::${list}"
 
   provider:
@@ -32,9 +35,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        tfupdate: ${{fromJson(needs.set-matrix.outputs.something)}}
-#          - DIR: envs/master/cost
-#          - DIR: envs/master/ops
+        tfupdate: ${{ needs.set-matrix.outputs.something }}
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
