@@ -1,3 +1,5 @@
+name: tfupdate
+
 on:
   pull_request: # Todo: remove
   workflow_dispatch:
