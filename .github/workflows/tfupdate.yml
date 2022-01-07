@@ -1,7 +1,6 @@
 name: tfupdate
 
 on:
-  pull_request: # Todo: remove
   workflow_dispatch:
 
 env:
@@ -24,7 +23,7 @@ jobs:
         id: find-tfstate-dirs
         run: |
           dirs=$(find ${TF_ROOT_DIR} -type f -name '*.tf' -exec dirname {} \; | grep -v 'modules\|\.terraform' | uniq |  jq -R -s -c 'split("\n")[:-1]')
-          echo $dirs # 確認のため出力
+          echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
   provider:
@@ -99,7 +98,7 @@ jobs:
           echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
 
       - uses: repo-sync/pull-request@v2
-        # if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
+        if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
         with:
           source_branch: ${{ env.TFUPDATE_BRANCH }}
           destination_branch: ${{ env.TFUPDATE_BASE_BRANCH }}
