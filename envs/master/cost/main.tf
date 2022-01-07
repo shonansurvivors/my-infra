@@ -99,6 +99,7 @@ module "chatbot_slack_configuration_cost" {
   version = "1.1.0-alpha.3"
 
   configuration_name = "cost"
+  guardrail_policies = [data.aws_iam_policy.guardrail_policy.arn]
   iam_role_arn       = aws_iam_role.chatbot_cost.arn
   logging_level      = "ERROR"
   slack_channel_id   = aws_ssm_parameter.slack_channel_id.value
@@ -135,4 +136,8 @@ resource "aws_cloudwatch_log_group" "chatbot_cost" {
   name = "/aws/chatbot/cost"
 
   retention_in_days = 7
+}
+
+data "aws_iam_policy" "guardrail_policy" {
+  name = "ReadOnlyAccess"
 }
