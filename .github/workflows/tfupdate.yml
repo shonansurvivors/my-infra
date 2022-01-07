@@ -24,6 +24,7 @@ jobs:
         run: |
           list=$(find envs/master -type f -name '*.tf' -exec dirname {} \; | grep -v '_templates\|modules\|\.terraform' | uniq)
           list="${list//$'\n'/\\n}"
+          echo $list
           echo "::set-output name=value::${list}"
 
   provider:
