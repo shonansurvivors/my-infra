@@ -18,8 +18,8 @@ jobs:
       max-parallel: 1
       matrix:
         tfupdate:
-          - DIR: ./envs/master/cost
-          - DIR: ./envs/master/ops
+          - DIR: envs/master/cost
+          - DIR: envs/master/ops
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
