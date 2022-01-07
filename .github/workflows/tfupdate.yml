@@ -28,6 +28,9 @@ jobs:
           echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
+  # Todo: Update Terraform
+  # Todo: Integrate TF_KIND and TFUPDATE_PROVIDER
+
   provider:
     needs: set-matrix
 
