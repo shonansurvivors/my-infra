@@ -29,8 +29,6 @@ jobs:
           echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
-  # Todo: Update Terraform
-
   provider:
     needs: set-matrix
 
