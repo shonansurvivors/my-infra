@@ -71,8 +71,8 @@ jobs:
       - name: Create tfupdate branch if not exist
         if: steps.check-branch.outputs.status != 200
         run: |
-          git branch ${{ env.TFUPDATE_BRANCH }}
-          git branch --set-upstream-to=origin/${{ env.TFUPDATE_BASE_BRANCH }} ${{ env.TFUPDATE_BRANCH }}
+          git branch ${TFUPDATE_BRANCH}
+          git branch --set-upstream-to=origin/${TFUPDATE_BASE_BRANCH} ${TFUPDATE_BRANCH}
 
       - name: Get the commit sha before tfupdate
         id: before-sha
