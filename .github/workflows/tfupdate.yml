@@ -87,17 +87,13 @@ jobs:
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: tfupdate ${{ env.TFUPDATE_TARGET }} .
+      - name: tfupdate ${{ env.TFUPDATE_TARGET }} ${ env.TF_DIR }
         if: env.TFUPDATE_TARGET == 'terraform'
-        run: |
-          cd ${TF_DIR}
-          tfupdate ${TFUPDATE_TARGET} .
+        run: tfupdate ${TFUPDATE_TARGET} ${TF_DIR}
 
-      - name: tfupdate provider ${{ env.TFUPDATE_TARGET }} .
+      - name: tfupdate provider ${{ env.TFUPDATE_TARGET }} ${ env.TF_DIR }
         if: env.TFUPDATE_TARGET != 'terraform'
-        run: |
-          cd ${TF_DIR}
-          tfupdate provider ${TFUPDATE_TARGET} .
+        run: tfupdate provider ${TFUPDATE_TARGET} ${TF_DIR}
 
       - uses: EndBug/add-and-commit@v7
         if: env.TFUPDATE_TARGET == 'terraform'
