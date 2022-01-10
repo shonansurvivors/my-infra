@@ -99,11 +99,14 @@ jobs:
           branch: ${{ env.TFUPDATE_BRANCH }}
           message: "tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
 
+      # Todo: Update Terraform version definition in other workflow yml
+
       - uses: EndBug/add-and-commit@8c12ff729a98cfbcd3fe38b49f55eceb98a5ec02 #v7.5
         if: env.TFUPDATE_TARGET != 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
           message: "tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
+
 
       - name: Get the commit sha after tfupdate
         id: after-sha
