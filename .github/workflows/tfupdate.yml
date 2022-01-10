@@ -42,6 +42,7 @@ jobs:
       matrix:
         TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
         TFUPDATE_PROVIDER:
+          - terraform
           - aws
 
     env:
@@ -88,12 +89,26 @@ jobs:
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
+      - name: tfupdate ${{ env.TFUPDATE_PROVIDER }} .
+        if: env.TFUPDATE_PROVIDER == 'terraform'
+        run: |
+          cd ${TF_DIR}
+          tfupdate ${TFUPDATE_PROVIDER} .
+
       - name: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
+        if: env.TFUPDATE_PROVIDER != 'terraform'
         run: |
           cd ${TF_DIR}
           tfupdate provider ${TFUPDATE_PROVIDER} .
 
       - uses: EndBug/add-and-commit@v7
+        if: env.TFUPDATE_PROVIDER == 'terraform'
+        with:
+          branch: ${{ env.TFUPDATE_BRANCH }}
+          message: "tfupdate ${{ env.TFUPDATE_PROVIDER }} ${{ env.TF_DIR}}"
+
+      - uses: EndBug/add-and-commit@v7
+        if: env.TFUPDATE_PROVIDER != 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
           message: "tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ${{ env.TF_DIR}}"
