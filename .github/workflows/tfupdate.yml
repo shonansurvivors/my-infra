@@ -42,10 +42,12 @@ jobs:
       max-parallel: 1
       matrix:
         TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
+        TFUPDATE_PROVIDER:
+          - aws
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TFUPDATE_PROVIDER: aws
+      TFUPDATE_PROVIDER: ${{ matrix.TFUPDATE_PROVIDER }}
       TF_KIND: aws
       TF_DIR: ${{ matrix.TF_DIR }}
 
