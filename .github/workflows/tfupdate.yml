@@ -1,4 +1,4 @@
-name: tfupdate
+name: Create tfupdate PR
 
 on:
   pull_request: # Todo: remove
@@ -71,8 +71,8 @@ jobs:
       - name: Create tfupdate branch if not exist
         if: steps.check-branch.outputs.status != 200
         run: |
-          git branch ${TFUPDATE_BRANCH}
-          git branch --set-upstream-to=origin/${TFUPDATE_BASE_BRANCH} ${TFUPDATE_BRANCH}
+          git branch ${{ env.TFUPDATE_BRANCH }}
+          git branch --set-upstream-to=origin/${{ env.TFUPDATE_BASE_BRANCH }} ${{ env.TFUPDATE_BRANCH }}
 
       - name: Get the commit sha before tfupdate
         id: before-sha
@@ -82,18 +82,16 @@ jobs:
       - name: Setup tfupdate from binary
         run: |
           set -o pipefail
-          wget -P /tmp ${TFUPDATE_BINARY}
-          basename ${TFUPDATE_BINARY} | xargs -I {} tar xvf /tmp/{} -C /tmp
+          wget -P /tmp ${{ env.TFUPDATE_BINARY }}
+          basename ${{ env.TFUPDATE_BINARY }} | xargs -I {} tar xvf /tmp/{} -C /tmp
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: tfupdate ${{ env.TFUPDATE_TARGET }} ${ env.TF_DIR }
-        if: env.TFUPDATE_TARGET == 'terraform'
-        run: tfupdate ${TFUPDATE_TARGET} ${TF_DIR}
+      - if: env.TFUPDATE_TARGET == 'terraform'
+        run: tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
 
-      - name: tfupdate provider ${{ env.TFUPDATE_TARGET }} ${ env.TF_DIR }
-        if: env.TFUPDATE_TARGET != 'terraform'
-        run: tfupdate provider ${TFUPDATE_TARGET} ${TF_DIR}
+      - if: env.TFUPDATE_TARGET != 'terraform'
+        run: tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
 
       - uses: EndBug/add-and-commit@v7
         if: env.TFUPDATE_TARGET == 'terraform'
