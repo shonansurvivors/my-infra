@@ -50,6 +50,7 @@ jobs:
     steps:
       - id: check-branch
         # NOTE: Shows lots of warnings because of https://github.com/octokit/request-action#warnings
+        # NOTE: If ${{ env.TFUPDATE_BRANCH }} doesn't exist, you'll get 404 Not Found error, but no problem.
         uses: octokit/request-action@7e93b91076fad3920c29d44eb2a6311d929db3dd #v2.1.0
         with:
           route: GET /repos/{repository}/git/ref/{ref}
