@@ -1,7 +1,6 @@
 name: Create tfupdate PR
 
 on:
-  pull_request: # Todo: remove
   workflow_dispatch:
   schedule:
     - cron: '0 21 * * SUN'
