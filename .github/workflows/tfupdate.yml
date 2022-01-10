@@ -30,7 +30,6 @@ jobs:
           echo "::set-output name=dirs::${dirs}"
 
   # Todo: Update Terraform
-  # Todo: Integrate TF_KIND and TFUPDATE_PROVIDER
 
   provider:
     needs: set-matrix
@@ -48,7 +47,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TFUPDATE_PROVIDER: ${{ matrix.TFUPDATE_PROVIDER }}
-      TF_KIND: aws
       TF_DIR: ${{ matrix.TF_DIR }}
 
     steps:
@@ -90,7 +88,7 @@ jobs:
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: (${{ env.TF_KIND }}) tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
+      - name: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
         run: |
           cd ${TF_DIR}
           tfupdate provider ${TFUPDATE_PROVIDER} .
@@ -98,7 +96,7 @@ jobs:
       - uses: EndBug/add-and-commit@v7
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "Update terraform/${{ env.TF_KIND }}: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ."
+          message: "tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ${{ env.TF_DIR}}"
 
       - name: Get the commit sha after tfupdate
         id: after-sha
