@@ -12,32 +12,13 @@ env:
   TF_ROOT_DIR: .
 
 jobs:
-  set-matrix:
-    runs-on: ubuntu-20.04
-
-    outputs:
-      dirs: ${{ steps.find-tfstate-dirs.outputs.dirs }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Find tfstate dirs
-        id: find-tfstate-dirs
-        run: |
-          dirs=$(find ${TF_ROOT_DIR} -type f -name '*.tf' -exec dirname {} \; | grep -v 'modules\|\.terraform' | uniq |  jq -R -s -c 'split("\n")[:-1]')
-          echo $dirs
-          echo "::set-output name=dirs::${dirs}"
-
   tfupdate:
-    needs: set-matrix
-
     runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
-        TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
         TFUPDATE_TARGET:
           - terraform
           - aws
@@ -45,7 +26,6 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TFUPDATE_TARGET: ${{ matrix.TFUPDATE_TARGET }}
-      TF_DIR: ${{ matrix.TF_DIR }}
 
     steps:
       - id: check-branch
@@ -88,16 +68,16 @@ jobs:
           sudo chmod +x /usr/local/bin/tfupdate
 
       - if: env.TFUPDATE_TARGET == 'terraform'
-        run: tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
+        run: tfupdate terraform -r .
 
       - if: env.TFUPDATE_TARGET != 'terraform'
-        run: tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
+        run: tfupdate provider -r ${{ env.TFUPDATE_TARGET }} .
 
       - uses: EndBug/add-and-commit@8c12ff729a98cfbcd3fe38b49f55eceb98a5ec02 #v7.5
         if: env.TFUPDATE_TARGET == 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
+          message: "tfupdate terraform -r ."
 
       # Todo: Update Terraform version definition in other workflow yml
 
@@ -105,7 +85,7 @@ jobs:
         if: env.TFUPDATE_TARGET != 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
+          message: "tfupdate provider -r ${{ env.TFUPDATE_TARGET }}"
 
 
       - name: Get the commit sha after tfupdate
