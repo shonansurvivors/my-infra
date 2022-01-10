@@ -14,7 +14,7 @@ env:
 
 jobs:
   set-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     outputs:
       dirs: ${{ steps.find-tfstate-dirs.outputs.dirs }}
@@ -32,7 +32,7 @@ jobs:
   tfupdate:
     needs: set-matrix
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
