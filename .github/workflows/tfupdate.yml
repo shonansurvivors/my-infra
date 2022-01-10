@@ -1,4 +1,4 @@
-name: tfupdate
+name: Create tfupdate PR
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   set-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     outputs:
       dirs: ${{ steps.find-tfstate-dirs.outputs.dirs }}
@@ -28,32 +28,32 @@ jobs:
           echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
-  # Todo: Update Terraform
-  # Todo: Integrate TF_KIND and TFUPDATE_PROVIDER
-
-  provider:
+  tfupdate:
     needs: set-matrix
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
         TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
+        TFUPDATE_TARGET:
+          - terraform
+          - aws
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TFUPDATE_PROVIDER: aws
-      TF_KIND: aws
+      TFUPDATE_TARGET: ${{ matrix.TFUPDATE_TARGET }}
       TF_DIR: ${{ matrix.TF_DIR }}
 
     steps:
       - id: check-branch
         # NOTE: Shows lots of warnings because of https://github.com/octokit/request-action#warnings
-        uses: octokit/request-action@v2.0.18
+        # NOTE: If ${{ env.TFUPDATE_BRANCH }} doesn't exist, you'll get 404 Not Found error, but no problem.
+        uses: octokit/request-action@7e93b91076fad3920c29d44eb2a6311d929db3dd #v2.1.0
         with:
-          route: GET /repos/:repository/git/ref/:ref
+          route: GET /repos/{repository}/git/ref/{ref}
           repository: ${{ github.repository }}
           ref: heads/${{ env.TFUPDATE_BRANCH }}
         continue-on-error: true
@@ -82,27 +82,38 @@ jobs:
       - name: Setup tfupdate from binary
         run: |
           set -o pipefail
-          wget -P /tmp ${TFUPDATE_BINARY}
-          basename ${TFUPDATE_BINARY} | xargs -I {} tar xvf /tmp/{} -C /tmp
+          wget -P /tmp ${{ env.TFUPDATE_BINARY }}
+          basename ${{ env.TFUPDATE_BINARY }} | xargs -I {} tar xvf /tmp/{} -C /tmp
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: (${{ env.TF_KIND }}) tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
-        run: |
-          cd ${TF_DIR}
-          tfupdate provider ${TFUPDATE_PROVIDER} .
+      - if: env.TFUPDATE_TARGET == 'terraform'
+        run: tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
 
-      - uses: EndBug/add-and-commit@v7
+      - if: env.TFUPDATE_TARGET != 'terraform'
+        run: tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR }}
+
+      - uses: EndBug/add-and-commit@8c12ff729a98cfbcd3fe38b49f55eceb98a5ec02 #v7.5
+        if: env.TFUPDATE_TARGET == 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "Update terraform/${{ env.TF_KIND }}: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ."
+          message: "tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
+
+      # Todo: Update Terraform version definition in other workflow yml
+
+      - uses: EndBug/add-and-commit@8c12ff729a98cfbcd3fe38b49f55eceb98a5ec02 #v7.5
+        if: env.TFUPDATE_TARGET != 'terraform'
+        with:
+          branch: ${{ env.TFUPDATE_BRANCH }}
+          message: "tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
+
 
       - name: Get the commit sha after tfupdate
         id: after-sha
         run: |
           echo ::set-output name=sha::$(git log --pretty=%H | head -n1)
 
-      - uses: repo-sync/pull-request@v2
+      - uses: repo-sync/pull-request@5ba2c80b97c87b9174c1548141b7acd80f6376e1 #v2.6.1
         if: ${{ steps.before-sha.outputs.sha != steps.after-sha.outputs.sha }}
         with:
           source_branch: ${{ env.TFUPDATE_BRANCH }}
