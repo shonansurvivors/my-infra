@@ -39,13 +39,13 @@ jobs:
       max-parallel: 1
       matrix:
         TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
-        TFUPDATE_PROVIDER:
+        TFUPDATE_TARGET:
           - terraform
           - aws
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TFUPDATE_PROVIDER: ${{ matrix.TFUPDATE_PROVIDER }}
+      TFUPDATE_TARGET: ${{ matrix.TFUPDATE_TARGET }}
       TF_DIR: ${{ matrix.TF_DIR }}
 
     steps:
@@ -87,29 +87,29 @@ jobs:
           sudo mv /tmp/tfupdate /usr/local/bin
           sudo chmod +x /usr/local/bin/tfupdate
 
-      - name: tfupdate ${{ env.TFUPDATE_PROVIDER }} .
-        if: env.TFUPDATE_PROVIDER == 'terraform'
+      - name: tfupdate ${{ env.TFUPDATE_TARGET }} .
+        if: env.TFUPDATE_TARGET == 'terraform'
         run: |
           cd ${TF_DIR}
-          tfupdate ${TFUPDATE_PROVIDER} .
+          tfupdate ${TFUPDATE_TARGET} .
 
-      - name: tfupdate provider ${{ env.TFUPDATE_PROVIDER }} .
-        if: env.TFUPDATE_PROVIDER != 'terraform'
+      - name: tfupdate provider ${{ env.TFUPDATE_TARGET }} .
+        if: env.TFUPDATE_TARGET != 'terraform'
         run: |
           cd ${TF_DIR}
-          tfupdate provider ${TFUPDATE_PROVIDER} .
+          tfupdate provider ${TFUPDATE_TARGET} .
 
       - uses: EndBug/add-and-commit@v7
-        if: env.TFUPDATE_PROVIDER == 'terraform'
+        if: env.TFUPDATE_TARGET == 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "tfupdate ${{ env.TFUPDATE_PROVIDER }} ${{ env.TF_DIR}}"
+          message: "tfupdate ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
 
       - uses: EndBug/add-and-commit@v7
-        if: env.TFUPDATE_PROVIDER != 'terraform'
+        if: env.TFUPDATE_TARGET != 'terraform'
         with:
           branch: ${{ env.TFUPDATE_BRANCH }}
-          message: "tfupdate provider ${{ env.TFUPDATE_PROVIDER }} ${{ env.TF_DIR}}"
+          message: "tfupdate provider ${{ env.TFUPDATE_TARGET }} ${{ env.TF_DIR}}"
 
       - name: Get the commit sha after tfupdate
         id: after-sha
