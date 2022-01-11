@@ -11,15 +11,15 @@ jobs:
       TF_ROOT_DIR: .
 
     outputs:
-      dirs: ${{ steps.find-tfstate-dirs.outputs.dirs }}
+      dirs: ${{ steps.set-matrix.outputs.dirs }}
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Find tfstate dirs
-        id: find-tfstate-dirs
+      - name: Detect dirs containing created or updated *.tf
+        id: set-matrix
         run: |
-          dirs=$(find ${TF_ROOT_DIR} -type f -name '*.tf' -exec dirname {} \; | grep -v 'modules\|\.terraform' | uniq | jq -R -s -c 'split("\n")[:-1]')
+          dirs=$(git diff HEAD..origin/main --diff-filter=d --name-only | grep -E "\.tf$" | xargs -I {} dirname {} | uniq | jq -R -s -c 'split("\n")[:-1]')
           echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
