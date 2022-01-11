@@ -26,6 +26,8 @@ jobs:
   tflint:
     needs: set-matrix
 
+    if: needs.set-matrix.outputs.dirs != '[]'
+
     runs-on: ubuntu-20.04
 
     strategy:
