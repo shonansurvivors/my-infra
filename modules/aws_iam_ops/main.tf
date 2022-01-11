@@ -118,7 +118,3 @@ resource "aws_iam_role_policy" "terraform_plan_deny" {
     }
   )
 }
-
-resource "aws_db_instance" "test" {
-  instance_class = "t1.micro"
-}
