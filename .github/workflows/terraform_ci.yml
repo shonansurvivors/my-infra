@@ -37,6 +37,7 @@ jobs:
     env:
       TF_DIR: ${{ matrix.TF_DIR }}
       TFLINT_VERSION: v0.34.1
+      TFLINT_AWS_VERSION: 0.11.0
 
     steps:
       - uses: actions/checkout@v2
@@ -50,7 +51,7 @@ jobs:
           cat <<EOF > .tflint.hcl
           plugin "aws" {
               enabled = true
-              version = "0.11.0"
+              version = "${{ env.TFLINT_AWS_VERSION }}"
               source  = "github.com/terraform-linters/tflint-ruleset-aws"
           }
           EOF
