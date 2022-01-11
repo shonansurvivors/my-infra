@@ -46,7 +46,7 @@ jobs:
           tflint_version: ${{ env.TFLINT_VERSION }}
 
       - run: |
-          echo <<EOF > .tflint.hcl
+          cat <<EOF > .tflint.hcl
           plugin "aws" {
               enabled = true
               version = "0.11.0"
