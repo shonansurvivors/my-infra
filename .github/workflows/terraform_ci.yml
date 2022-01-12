@@ -52,6 +52,7 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - run: terraform fmt -check -diff
+        working-directory: ${{ env.TF_DIR }}
         continue-on-error: true
 
       - uses: terraform-linters/setup-tflint@v1
