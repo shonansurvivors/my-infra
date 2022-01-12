@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "saml" {
 }
 
 resource "aws_iam_role" "admin" {
-  name = "AdminRole"
+  name  = "AdminRole"
 
   assume_role_policy = data.aws_iam_policy_document.saml.source_json
   managed_policy_arns = [
