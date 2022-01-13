@@ -25,33 +25,6 @@ jobs:
           echo $dirs
           echo "::set-output name=dirs::${dirs}"
 
-  fmt:
-    needs: set-matrix
-
-    if: needs.set-matrix.outputs.dirs != '[]'
-
-    runs-on: ubuntu-20.04
-
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        TF_DIR: ${{ fromJson(needs.set-matrix.outputs.dirs) }}
-
-    env:
-      TF_DIR: ${{ matrix.TF_DIR }}
-      TF_VERSION: 1.1.2
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ env.TF_VERSION }}
-
-      - run: terraform fmt -check -diff
-        working-directory: ${{ env.TF_DIR }}
-
   tflint:
     needs: set-matrix
 
