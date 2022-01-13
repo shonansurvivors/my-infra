@@ -3,7 +3,7 @@ terraform {
   backend "s3" {
     bucket  = "shonansurvivors-prod-tfstate"
     encrypt = true
-    key     = "services/laravel.tfstate"
+    key     = "services/coreapp.tfstate"
     profile = "prod"
     region  = "ap-northeast-1"
   }
