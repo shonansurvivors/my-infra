@@ -1,5 +1,7 @@
 resource "aws_route53_zone" "this" {
   name = "appfoobar.link"
+
+  force_destroy = false
 }
 
 resource "aws_acm_certificate" "root" {
