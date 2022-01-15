@@ -16,7 +16,7 @@ resource "aws_acm_certificate" "wild_root_us_east_1" {
   provider = aws.us-east-1
 }
 
-resource "aws_route53_record" "wild_root_us_east_1_certificate_validation" {
+resource "aws_route53_record" "certificate_validation" {
   for_each = {
     for dvo in aws_acm_certificate.wild_root_us_east_1.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
