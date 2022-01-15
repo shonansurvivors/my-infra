@@ -13,4 +13,6 @@ EOF
 
 touch "$TARGET_DIRS/main.tf"
 
-cd "$TARGET_DIRS" && terragrunt init
+cd "$TARGET_DIRS"
+terragrunt init
+terraform providers lock -platform=linux_amd64 -platform=darwin_amd64
