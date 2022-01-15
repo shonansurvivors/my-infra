@@ -31,3 +31,15 @@ resource "aws_route53_record" "certificate_validation" {
   type    = each.value.type
   zone_id = aws_route53_zone.this.id
 }
+
+resource "aws_acm_certificate" "root_us_east_1" {
+  domain_name = aws_route53_zone.this.name
+
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  provider = aws.us-east-1
+}
