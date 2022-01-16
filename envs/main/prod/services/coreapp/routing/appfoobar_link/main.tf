@@ -43,3 +43,57 @@ resource "aws_acm_certificate" "root_us_east_1" {
 
   provider = aws.us-east-1
 }
+
+data "aws_s3_bucket" "lp" {
+  bucket = "shonansurvivors-prod-coreapp-lp"
+}
+
+data "aws_cloudfront_cache_policy" "root" {
+  name = "Managed-CachingOptimized"
+}
+
+resource "aws_cloudfront_distribution" "root" {
+  aliases = [
+    "appfoobar.link"
+  ]
+  default_root_object = "index.html"
+  enabled             = true
+  is_ipv6_enabled     = true
+
+  default_cache_behavior {
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cache_policy_id        = data.aws_cloudfront_cache_policy.root.id
+    compress               = true
+    target_origin_id       = data.aws_s3_bucket.lp.bucket_regional_domain_name
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  logging_config {
+    bucket          = "shonansurvivors-prod-cloudfront-logs.s3.amazonaws.com" # Todo: Use data resource
+    include_cookies = false
+  }
+
+  origin {
+    domain_name = data.aws_s3_bucket.lp.bucket_regional_domain_name
+    origin_id   = data.aws_s3_bucket.lp.bucket_regional_domain_name
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate.root_us_east_1.arn
+    minimum_protocol_version = "TLSv1.2_2021"
+    ssl_support_method       = "sni-only"
+  }
+}
