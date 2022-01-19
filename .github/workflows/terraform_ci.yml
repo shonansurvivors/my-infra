@@ -2,9 +2,6 @@ name: Terraform CI
 
 on:
   pull_request:
-    paths:
-      - '!**/README.md'
-      - '!**/.gitignore'
 
 jobs:
   ci:
