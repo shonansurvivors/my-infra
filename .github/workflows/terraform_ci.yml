@@ -6,5 +6,3 @@ on:
 jobs:
   ci:
     uses: shonansurvivors/github-actions-workflows/.github/workflows/terraform_ci.yml@main
-    with:
-      terraform_version: 1.1.2
