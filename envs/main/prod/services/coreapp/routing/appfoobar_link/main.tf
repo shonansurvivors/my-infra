@@ -56,6 +56,7 @@ resource "aws_cloudfront_distribution" "root" {
   aliases = [
     "appfoobar.link"
   ]
+  comment             = "appfoobar.link"
   default_root_object = "index.html"
   enabled             = true
   is_ipv6_enabled     = true
@@ -76,8 +77,9 @@ resource "aws_cloudfront_distribution" "root" {
   }
 
   logging_config {
-    bucket          = "shonansurvivors-prod-cloudfront-logs.s3.amazonaws.com" # Todo: Use data resource
+    bucket          = "shonansurvivors-prod-cloudfront-logs.s3.amazonaws.com"
     include_cookies = false
+    prefix          = "appfoobar.link"
   }
 
   origin {
