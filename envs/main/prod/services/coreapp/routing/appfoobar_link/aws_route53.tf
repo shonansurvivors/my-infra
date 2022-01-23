@@ -6,6 +6,7 @@ resource "aws_route53_zone" "this" {
 
 resource "aws_route53_record" "dev_ns" {
   name    = "dev.${aws_route53_zone.this.name}"
+  ttl     = 172800
   type    = "NS"
   zone_id = aws_route53_zone.this.id
 
