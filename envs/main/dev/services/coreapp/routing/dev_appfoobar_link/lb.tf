@@ -50,3 +50,43 @@ resource "aws_lb_listener" "redirect_http_to_https" {
     }
   }
 }
+
+resource "aws_lb_listener_rule" "foo" {
+  listener_arn = aws_lb_listener.https.arn
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "aws_lb_listener_rule.foo"
+      status_code  = "200"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["foo.dev.appfoobar.link"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "bar" {
+  listener_arn = aws_lb_listener.https.arn
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "aws_lb_listener_rule.bar"
+      status_code  = "200"
+    }
+  }
+
+  condition {
+    host_header {
+      values = ["bar.dev.appfoobar.link"]
+    }
+  }
+}
