@@ -1,9 +1,3 @@
-resource "aws_route53_zone" "this" {
-  name = "appfoobar.link"
-
-  force_destroy = false
-}
-
 resource "aws_acm_certificate" "wild_root_us_east_1" {
   domain_name = "*.${aws_route53_zone.this.name}"
 
