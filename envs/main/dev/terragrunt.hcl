@@ -13,10 +13,10 @@ remote_state {
   }
 }
 
-generate "provider" {
-  path      = "provider.tf"
+generate "providers" {
+  path      = "providers.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = file("provider.tf")
+  contents  = file("providers.tf")
 }
 
 generate "version" {
