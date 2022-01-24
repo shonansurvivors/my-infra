@@ -13,35 +13,10 @@ remote_state {
   }
 }
 
-generate "provider" {
-  path      = "provider.tf"
+generate "providers" {
+  path      = "providers.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-provider "aws" {
-  profile = "master"
-  region  = "ap-northeast-1"
-
-  default_tags {
-    tags = {
-      Env       = "master"
-      ManagedBy = "my-infra"
-    }
-  }
-}
-
-provider "aws" {
-  alias   = "us-east-1"
-  profile = "master"
-  region  = "us-east-1"
-
-  default_tags {
-    tags = {
-      Env       = "master"
-      ManagedBy = "my-infra"
-    }
-  }
-}
-EOF
+  contents  = file("providers.tf")
 }
 
 generate "version" {

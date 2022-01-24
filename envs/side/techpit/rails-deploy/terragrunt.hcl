@@ -13,22 +13,10 @@ remote_state {
   }
 }
 
-generate "provider" {
-  path      = "provider.tf"
+generate "providers" {
+  path      = "providers.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-provider "aws" {
-  profile = "rails-deploy"
-  region  = "ap-northeast-1"
-
-  default_tags {
-    tags = {
-      Env       = "rails-deploy"
-      ManagedBy = "my-infra"
-    }
-  }
-}
-EOF
+  contents  = file("providers.tf")
 }
 
 generate "version" {
