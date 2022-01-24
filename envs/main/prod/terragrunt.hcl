@@ -13,38 +13,14 @@ remote_state {
   }
 }
 
-generate "provider" {
-  path      = "provider.tf"
+generate "providers" {
+  path      = "providers.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-provider "aws" {
-  profile = "prod"
-  region  = "ap-northeast-1"
-
-  default_tags {
-    tags = {
-      Env       = "prod"
-      System    = "main"
-      ManagedBy = "my-infra"
-    }
-  }
-}
-EOF
+  contents  = file("providers.tf")
 }
 
 generate "version" {
   path      = "version.tf"
   if_exists = "overwrite_terragrunt"
-  contents  = <<EOF
-terraform {
-  required_version = "1.1.4"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "3.73.0"
-    }
-  }
-}
-EOF
+  contents  = file("version.tf")
 }

@@ -11,3 +11,9 @@ provider "aws" {
     }
   }
 }
+
+provider "aws" {
+  profile = "dev"
+  alias   = "us-east-1"
+  region  = "us-east-1"
+}
