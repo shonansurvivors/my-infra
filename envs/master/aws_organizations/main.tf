@@ -16,11 +16,11 @@ resource "aws_organizations_organizational_unit" "workloads" {
 }
 
 resource "aws_organizations_organizational_unit" "workloads_prod" {
-  name      = "Workloads-Prod"
+  name      = "WorkloadsProd"
   parent_id = aws_organizations_organizational_unit.workloads.id
 }
 
 resource "aws_organizations_organizational_unit" "workloads_test" {
-  name      = "Workloads-Test"
+  name      = "WorkloadsTest"
   parent_id = aws_organizations_organizational_unit.workloads.id
 }
