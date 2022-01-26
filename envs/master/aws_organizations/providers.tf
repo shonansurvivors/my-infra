@@ -6,20 +6,14 @@ provider "aws" {
   default_tags {
     tags = {
       Env       = "master"
+      System    = "main"
       ManagedBy = "my-infra"
     }
   }
 }
 
 provider "aws" {
-  alias   = "us-east-1"
   profile = "master"
+  alias   = "us-east-1"
   region  = "us-east-1"
-
-  default_tags {
-    tags = {
-      Env       = "master"
-      ManagedBy = "my-infra"
-    }
-  }
 }
