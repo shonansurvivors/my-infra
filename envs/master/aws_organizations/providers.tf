@@ -12,14 +12,7 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias   = "us-east-1"
   profile = "master"
+  alias   = "us-east-1"
   region  = "us-east-1"
-
-  default_tags {
-    tags = {
-      Env       = "master"
-      ManagedBy = "my-infra"
-    }
-  }
 }
