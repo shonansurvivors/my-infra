@@ -1,3 +1,5 @@
+# aws_organizations_account resources are not managed in this repo.
+
 data "aws_organizations_organization" "this" {}
 
 resource "aws_organizations_organizational_unit" "sandbox" {
