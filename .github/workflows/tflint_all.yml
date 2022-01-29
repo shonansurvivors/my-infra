@@ -15,8 +15,9 @@ on:
         default: latest
       own_tflint_hcl_exists:
         description: own_tflint_hcl_exists
-        required: true
+        required: false
         type: boolean
+        default: false
       tflint_hcl_path:
         description: tflint_hcl_path
         required: false
@@ -24,10 +25,15 @@ on:
         default: .tflint.hcl
 
 jobs:
-  tflint:
-    uses: shonansurvivors/github-actions-workflows/.github/workflows/tflint_all.yml@main
-    with:
-      tf_root_dir: ${{ github.event.inputs.tf_root_dir }}
-      tflint_version: ${{ github.event.inputs.tflint_version }}
-      own_tflint_hcl_exists: ${{ github.event.inputs.own_tflint_hcl_exists }}
-      tflint_hcl_path: ${{ github.event.inputs.tflint_hcl_path }}
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: echo ${{ toJson(github.event.inputs) }}
+
+#  tflint:
+#    uses: shonansurvivors/github-actions-workflows/.github/workflows/tflint_all.yml@main
+#    with:
+#      tf_root_dir: ${{ github.event.inputs.tf_root_dir }}
+#      tflint_version: ${{ github.event.inputs.tflint_version }}
+#      own_tflint_hcl_exists: ${{ github.event.inputs.own_tflint_hcl_exists }}
+#      tflint_hcl_path: ${{ github.event.inputs.tflint_hcl_path }}
