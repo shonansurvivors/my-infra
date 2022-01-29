@@ -28,7 +28,7 @@ jobs:
   tflint:
     uses: shonansurvivors/github-actions-workflows/.github/workflows/tflint_all.yml@main
     with:
-      tf_root_dir: ${{ inputs.tf_root_dir }}
-      tflint_version: ${{ inputs.tflint_version }}
-      own_tflint_hcl_exists: ${{ inputs.own_tflint_hcl_exists }}
-      tflint_hcl_path: ${{ inputs.tflint_hcl_path }}
+      tf_root_dir: ${{ github.events.inputs.tf_root_dir }}
+      tflint_version: ${{ github.events.inputs.tflint_version }}
+      own_tflint_hcl_exists: ${{ github.events.inputs.own_tflint_hcl_exists }}
+      tflint_hcl_path: ${{ github.events.inputs.tflint_hcl_path }}
