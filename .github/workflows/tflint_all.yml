@@ -12,12 +12,11 @@ on:
         description: tflint_version
         required: false
         type: string
-        default: 0.34.1
+        default: latest
       own_tflint_hcl_exists:
         description: own_tflint_hcl_exists
-        required: false
+        required: true
         type: boolean
-        default: false
       tflint_hcl_path:
         description: tflint_hcl_path
         required: false
@@ -28,11 +27,7 @@ jobs:
   tflint:
     uses: shonansurvivors/github-actions-workflows/.github/workflows/tflint_all.yml@main
     with:
-#      tf_root_dir: ${{ github.event.inputs.tf_root_dir }}
-#      tflint_version: ${{ github.event.inputs.tflint_version }}
-#      own_tflint_hcl_exists: ${{ github.event.inputs.own_tflint_hcl_exists }}
-#      tflint_hcl_path: ${{ github.event.inputs.tflint_hcl_path }}
-      tf_root_dir: .
-      tflint_version: 0.34.1
-      own_tflint_hcl_exists: false
-      tflint_hcl_path: .tflint.hcl
+      tf_root_dir: ${{ github.event.inputs.tf_root_dir }}
+      tflint_version: ${{ github.event.inputs.tflint_version }}
+      own_tflint_hcl_exists: ${{ github.event.inputs.own_tflint_hcl_exists }}
+      tflint_hcl_path: ${{ github.event.inputs.tflint_hcl_path }}
