@@ -1,4 +1,4 @@
-name: tflint all dirs
+name: Check all terraform dirs
 
 on:
   workflow_dispatch:
@@ -32,3 +32,8 @@ jobs:
       tflint_version: ${{ github.event.inputs.tflint_version }}
       own_tflint_hcl_exists: ${{ fromJson(github.event.inputs.own_tflint_hcl_exists) }}
       tflint_hcl_path: ${{ github.event.inputs.tflint_hcl_path }}
+
+  tfsec:
+    uses: shonansurvivors/github-actions-workflows/.github/workflows/tfsec_all.yml@main
+    with:
+      tf_root_dir: ${{ github.event.inputs.tf_root_dir }}
