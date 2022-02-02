@@ -48,8 +48,14 @@ locals {
   }
 }
 
+data "aws_kms_key" "aws_sns" {
+  key_id = "alias/aws/sns"
+}
+
 resource "aws_sns_topic" "budget" {
   name = "budget"
+
+  kms_master_key_id = data.aws_kms_key.aws_sns.key_id #tfsec:ignore:aws-sns-enable-topic-encryption
 
   policy = jsonencode(
     {
