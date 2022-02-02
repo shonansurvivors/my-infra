@@ -1,7 +1,7 @@
 resource "aws_lb" "this" {
   name = "main-dev-appfoobar-link"
 
-  internal           = false
+  internal           = false #tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type = "application"
 
   drop_invalid_header_fields = true
