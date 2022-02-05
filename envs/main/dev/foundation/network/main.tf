@@ -39,6 +39,7 @@ resource "aws_eip" "nat" {
   }
 }
 
+#tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "vpc_flow_logs" {
   bucket = "shonansurvivors-dev-vpc-flow-logs"
 
