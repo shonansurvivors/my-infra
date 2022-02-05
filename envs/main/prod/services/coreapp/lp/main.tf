@@ -1,7 +1,8 @@
+#tfsec:ignore:aws-s3-enable-bucket-encryption
 resource "aws_s3_bucket" "static_files" {
   bucket = "shonansurvivors-prod-coreapp-lp"
 
-  acl           = "public-read"
+  acl           = "public-read" #tfsec:ignore:aws-s3-no-public-access-with-acl
   force_destroy = false
 
   lifecycle_rule {
