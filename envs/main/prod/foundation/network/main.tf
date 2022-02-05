@@ -46,6 +46,22 @@ resource "aws_s3_bucket" "vpc_flow_logs" {
   acl           = "private"
   force_destroy = false
 
+  lifecycle_rule {
+    enabled = true
+    id      = "remove-old-objects"
+
+    abort_incomplete_multipart_upload_days = 7
+
+    expiration {
+      days                         = 90
+      expired_object_delete_marker = false
+    }
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+  }
+
   server_side_encryption_configuration {
     rule {
       bucket_key_enabled = false

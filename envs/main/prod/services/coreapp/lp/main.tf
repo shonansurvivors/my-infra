@@ -4,6 +4,17 @@ resource "aws_s3_bucket" "static_files" {
   acl           = "public-read"
   force_destroy = false
 
+  lifecycle_rule {
+    enabled = true
+    id      = "remove-old-objects"
+
+    abort_incomplete_multipart_upload_days = 7
+
+    noncurrent_version_expiration {
+      days = 30
+    }
+  }
+
   website {
     index_document = "index.html"
     error_document = "404.html"
