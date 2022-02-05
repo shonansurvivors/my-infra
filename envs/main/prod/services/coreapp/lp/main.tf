@@ -9,6 +9,10 @@ resource "aws_s3_bucket" "static_files" {
     error_document = "404.html"
   }
 
+  versioning {
+    enabled = true
+  }
+
   tags = {
     Name = "shonansurvivors-prod-coreapp-lp"
   }

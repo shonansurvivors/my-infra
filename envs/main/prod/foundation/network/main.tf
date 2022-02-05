@@ -55,6 +55,10 @@ resource "aws_s3_bucket" "vpc_flow_logs" {
       }
     }
   }
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "vpc_flow_logs" {

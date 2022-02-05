@@ -33,6 +33,10 @@ resource "aws_s3_bucket" "cloudfront_logs" {
       }
     }
   }
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
